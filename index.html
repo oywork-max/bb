@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유통기한 검사하기</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --accent-color: #007bff;
+            --accent-text: #ffffff;
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            text-align: center;
+            color: #111;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        /* 오늘 날짜 영역 */
+        .date-box {
+            text-align: center;
+            background: #f8f9fa;
+            border: 1px solid #eaeaea;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        /* 유통기한 기준 영역 */
+        .section-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #868e96;
+            margin-bottom: 8px;
+            padding-left: 4px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .info-card {
+            background: #f8f9fa;
+            border-left: 4px solid var(--accent-color);
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        .info-card .label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 4px;
+        }
+
+        .info-card .value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #212529;
+        }
+
+        /* 오늘의 검사항목 영역 */
+        .today-task-box {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: var(--accent-text);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+        }
+
+        .today-task-box .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .today-task-box .value {
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>유통기한 검사하기</h1>
+
+        <!-- 오늘의 날짜 표기 영역 -->
+        <div class="date-box" id="current-date">
+            Loading...
+        </div>
+
+        <!-- 카테고리별 말일 표기 영역 -->
+        <div>
+            <div class="section-title">카테고리별 유통기한 (말일 기준)</div>
+            <div class="grid-container">
+                <div class="info-card">
+                    <div class="label">식품 (+3개월)</div>
+                    <div class="value" id="food-expiry">-</div>
+                </div>
+                <div class="info-card">
+                    <div class="label">건강식품 (+6개월)</div>
+                    <div class="value" id="health-expiry">-</div>
+                </div>
+                <div class="info-card">
+                    <div class="label">비식품 (+18개월)</div>
+                    <div class="value" id="nonfood-expiry">-</div>
+                </div>
+                <div class="info-card">
+                    <div class="label">의료기기 (+24개월)</div>
+                    <div class="value" id="medical-expiry">-</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 오늘의 식품 유통기한 검사항목 영역 -->
+        <div class="today-task-box">
+            <div class="label">식품 유통기한 (오늘의 검사항목)</div>
+            <div class="value" id="today-task">Loading...</div>
+        </div>
+    </div>
+
+    <script>
+        // 요일별 검사항목 데이터
+        const weeklyTasks = {
+            0: "건강식품",       // 일요일
+            1: "딜라이트",       // 월요일
+            2: "과자",          // 화요일
+            3: "스위츠",         // 수요일
+            4: "음료",          // 목요일
+            5: "이너뷰티 + 올더베러 덤빈", // 금요일
+            6: "라이트밀 + 구강캔디류"    // 토요일
+        };
+
+        const dayNames = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+
+        function initApp() {
+            const today = new Date();
+            
+            // 1. 오늘의 날짜 및 요일 표시
+            const year = today.getFullYear();
+            const month = today.getMonth() + 1;
+            const date = today.getDate();
+            const dayOfWeek = dayNames[today.getDay()];
+            
+            document.getElementById('current-date').innerText = `${year}년 ${month}월 ${date}일 (${dayOfWeek})`;
+
+            // 2. 요일별 검사항목 표시
+            const currentDayCode = today.getDay(); 
+            document.getElementById('today-task').innerText = weeklyTasks[currentDayCode];
+
+            // 3. 카테고리별 유통기한 계산 ("26년 9월" 형식)
+            document.getElementById('food-expiry').innerText = getExpiryFormat(today, 3);
+            document.getElementById('health-expiry').innerText = getExpiryFormat(today, 6);
+            document.getElementById('nonfood-expiry').innerText = getExpiryFormat(today, 18);
+            document.getElementById('medical-expiry').innerText = getExpiryFormat(today, 24);
+        }
+
+        // N개월 후 말일의 연/월을 "YY년 M월" 형식으로 반환하는 함수
+        function getExpiryFormat(baseDate, addMonths) {
+            // 기준 날짜에서 N개월을 더함
+            const targetDate = new Date(baseDate.getFullYear(), baseDate.getMonth() + addMonths, 1);
+            
+            const targetYear = String(targetDate.getFullYear()).slice(-2); // 뒤의 2자리만 추출 (예: 2026 -> 26)
+            const targetMonth = targetDate.getMonth() + 1;
+
+            return `${targetYear}년 ${targetMonth}월`;
+        }
+
+        // 앱 실행
+        initApp();
+    </script>
+</body>
+</html>
