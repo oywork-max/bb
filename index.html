@@ -120,9 +120,12 @@
 
         /* [표기영역] 회색 음영 Notice 스타일의 요일별 검사항목 */
         .notice-box {
-            background-color: var(--notice-bg);
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: var(--accent-text);
+            padding: 20px;
             border-radius: var(--border-radius);
-            padding: 14px 16px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
         }
 
         .notice-title {
@@ -234,7 +237,7 @@
 
             // 2. 카테고리별 유통기한 계산 ("26년 9월" 형식)
             document.getElementById('food-expiry').innerText = getExpiryFormat(today, 3);
-            document.getElementById('health-expiry').innerText = getExpiryFormat(today, 6);
+            document.getElementById('health-expiry').innerText = getExpiryFormat(today, 8);
             document.getElementById('nonfood-expiry').innerText = getExpiryFormat(today, 18);
             document.getElementById('medical-expiry').innerText = getExpiryFormat(today, 24);
 
