@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#9ACD32">
     <title>유통기한 검사하기</title>
     <!-- 아이폰 --><link rel="apple-touch-icon" href="icon-180.png">
     <!-- 안드로이드 --><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -16,6 +15,7 @@
             --card-bg: #ffffff;
             --text-color: #212529;
             --accent-color: #007bff;
+            --accent-text: #ffffff;
             --notice-bg: #e9ecef; /* 회색 음영 */
             --border-radius: 12px;
         }
@@ -69,6 +69,14 @@
         }
 
         /* [표기영역] 카테고리별 계산 결과 */
+        .section-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #868e96;
+            margin-bottom: 8px;
+            padding-left: 4px;
+        }
+
         .grid-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -76,24 +84,22 @@
         }
 
         .info-card {
-            background: #fff;
-            border: 1px solid #dee2e6;
+            background: #f8f9fa;
+            border-left: 4px solid var(--accent-color);
             padding: 12px;
-            border-radius: 8px;
-            text-align: center;
+            border-radius: 6px;
         }
 
         .info-card .label {
             font-size: 0.85rem;
             color: #6c757d;
             margin-bottom: 4px;
-            font-weight: 500;
         }
 
         .info-card .value {
             font-size: 1.1rem;
             font-weight: 700;
-            color: var(--accent-color);
+            color: #212529;
         }
 
         /* [표기영역] 오늘의 식품 유통기한 항목 */
@@ -108,7 +114,7 @@
 
         .today-task-box .label {
             font-size: 0.85rem;
-            color: #495057;
+            color: #;
             font-weight: 600;
             margin-bottom: 4px;
         }
@@ -168,13 +174,14 @@
         <div class="date-box" id="current-date">-</div>
 
         <!-- [표기영역] 카테고리별 유통기한 말일 계산 -->
+        <div class="section-title">카테고리별 유통기한 (말일 기준)</div>
         <div class="grid-container">
             <div class="info-card">
                 <div class="label">식품 (+3개월)</div>
                 <div class="value" id="food-expiry">-</div>
             </div>
             <div class="info-card">
-                <div class="label">건강식품 (+6개월)</div>
+                <div class="label">건강식품 (+8개월)</div>
                 <div class="value" id="health-expiry">-</div>
             </div>
             <div class="info-card">
